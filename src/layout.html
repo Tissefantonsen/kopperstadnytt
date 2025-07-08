@@ -1,34 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="no">
 <head>
-  <meta charset="utf-8">
-  <style>
-    body { font-family: sans-serif; margin: 1cm; }
-    h1.title { text-align: center; font-size: 24pt; margin-bottom: 0.5cm; }
-    .category { margin-top: 1cm; }
-    .article { margin-bottom: 1cm; }
-    .backlink { font-size: 10pt; text-align: right; }
-  </style>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        h1, h2, h3 { page-break-after: avoid; }
+        .article { page-break-before: always; }
+        .back { font-size: 0.8em; margin-top: 2em; }
+        a { text-decoration: none; color: black; }
+    </style>
+    <title>KopperstadNytt</title>
 </head>
 <body>
-  <h1 class="title">KopperstadNytt</h1>
-  <h2>Innhold</h2>
-  <ul>
+    <h1 id="forside">📰 KopperstadNytt – {{ articles[0].entries[0].title[:10] }}...</h1>
+    <p><em>Dagens nyheter: {{ now.strftime("%d.%m.%Y") }}</em></p>
+
+    <h2>Innhold</h2>
     {% for category in articles %}
-      <li><a href="#{{ category.name | replace(' ', '') }}">{{ category.name }}</a></li>
+        <h3>{{ category.name }}</h3>
+        <ul>
+        {% for entry in category.entries %}
+            <li><a href="#{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</a></li>
+        {% endfor %}
+        </ul>
     {% endfor %}
-  </ul>
-  {% for category in articles %}
-    <div class="category">
-      <h2 id="{{ category.name | replace(' ', '') }}">{{ category.name }}</h2>
-      {% for article in category.entries %}
-        <div class="article">
-          <h3>{{ article.title }}</h3>
-          <p>{{ article.full }}</p>
-          <div class="backlink"><a href="#top">Tilbake til forsiden</a></div>
-        </div>
-      {% endfor %}
-    </div>
-  {% endfor %}
+
+    {% for category in articles %}
+        {% for entry in category.entries %}
+            <div class="article">
+                <h2 id="{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</h2>
+                <p>{{ entry.full | replace("\n", "<br>") }}</p>
+                <p class="back"><a href="#forside">⬅ Tilbake til forsiden</a></p>
+            </div>
+        {% endfor %}
+    {% endfor %}
 </body>
 </html>
