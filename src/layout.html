@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: sans-serif; margin: 2em; }
+        body { font-family: sans-serif; margin: 1.2cm; }
         h1, h2, h3 { page-break-after: avoid; }
         .article { page-break-before: always; }
         .back { font-size: 0.8em; margin-top: 2em; }
@@ -12,8 +12,7 @@
     <title>KopperstadNytt</title>
 </head>
 <body>
-    <h1 id="forside">📰 KopperstadNytt – {{ articles[0].entries[0].title[:10] }}...</h1>
-    <p><em>Dagens nyheter: {{ now.strftime("%d.%m.%Y") }}</em></p>
+    <h1 id="forside">📰 KopperstadNytt – {{ now.strftime("%d.%m.%Y") }}</h1>
 
     <h2>Innhold</h2>
     {% for category in articles %}
@@ -29,7 +28,9 @@
         {% for entry in category.entries %}
             <div class="article">
                 <h2 id="{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</h2>
-                <p>{{ entry.full | replace("\n", "<br>") }}</p>
+                {% for paragraph in entry.full.split('\n\n') %}
+                    <p>{{ paragraph.strip() }}</p>
+                {% endfor %}
                 <p class="back"><a href="#forside">⬅ Tilbake til forsiden</a></p>
             </div>
         {% endfor %}
