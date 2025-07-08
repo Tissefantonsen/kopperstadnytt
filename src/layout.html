@@ -44,5 +44,14 @@
         {% for entry in category.entries %}
             <div class="article">
                 <h2 id="{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</h2>
-                {% fo
+                {% for paragraph in entry.full.split('\n\n') %}
+                    <p>{{ paragraph.strip() }}</p>
+                {% endfor %}
+                <p class="back"><a href="#forside">⬅ Tilbake til forsiden</a></p>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>
+
 
