@@ -49,7 +49,7 @@ for kategori in config["Kategorier"]:
 with open("src/layout.html", encoding="utf-8") as f:
     template = Template(f.read())
 
-html_out = template.render(articles=all_articles)
+html_out = template.render(articles=all_articles, now=datetime.datetime.now())
 HTML(string=html_out).write_pdf(output_pdf)
 
 # === DROPPBOX-UPPLASTING ===
