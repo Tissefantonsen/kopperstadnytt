@@ -1,71 +1,69 @@
-# src/rss_to_pdf.py
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+-           font-family: Georgia, serif;
+-           margin: 0.1cm;
++           font-family: Georgia, serif;
++           margin: 0.1cm;
+        }
+        .date {
+            text-align: right;
+            font-size: 11pt;
+-           margin-top: 0.1cm;
++           margin-top: 0.1cm;
+            margin-bottom: 0.3cm;
+        }
+        h1 {
+            font-size: 28pt;
+            font-weight: bold;
+            text-align: center;
+        }
+        h2, h3 {
+            page-break-after: avoid;
+        }
+        .article {
+            page-break-before: always;
+        }
+        .back {
+            font-size: 0.8em;
+            margin-top: 2em;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        ul {
+            padding-left: 1.2em;
+        }
+    </style>
+    <title>KopperstadNytt</title>
+</head>
+<body>
+    <div class="date">{{ now.strftime("%d.%m.%Y") }}</div>
+    <h1 id="forside">KopperstadNytt</h1>
 
-import feedparser
-import requests
-from bs4 import BeautifulSoup
+    {% for category in articles %}
+        <h3>{{ category.name }}</h3>
+        <ul>
+        {% for entry in category.entries %}
+            <li><a href="#{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
 
-# --- RSS-kilder per kategori ---
-FEEDS = {
-    "Norske nyheter": [
-        "https://www.nrk.no/toppsaker.rss",
-        "https://www.tv2.no/rss/nyheter",
-    ],
-    "Teknologi": [
-        "https://www.tu.no/rss",
-    ],
-    "Rock": [
-        "https://www.blabbermouth.net/feed/"
-    ]
-}
-
-def fetch_full_article(url):
-    """Hent full artikkeltekst fra gitt URL. Returnerer plaintext-streng."""
-    try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Fjern script/style
-        for tag in soup(["script", "style", "nav", "footer", "header"]):
-            tag.decompose()
-
-        # Heuristikk for å hente hovedinnholdet
-        article_tags = soup.find_all(["p", "h2"])
-        article_text = "\n\n".join([tag.get_text(strip=True) for tag in article_tags if tag.get_text(strip=True)])
-        return article_text if article_text else "⚠️ Fant ingen artikkeltekst."
-    except Exception as e:
-        return f"⚠️ Feil ved henting: {str(e)}"
-
-# --- Hovedprosess: Hent alle artikler strukturert ---
-all_articles = []
-
-for category, urls in FEEDS.items():
-    entries = []
-    for url in urls:
-        feed = feedparser.parse(url)
-        for entry in feed.entries:
-            link = getattr(entry, 'link', None)
-            title = getattr(entry, 'title', "(Uten tittel)")
-
-            if not link:
-                print(f"⚠️ RSS-artikkel mangler link: {title}")
-                full = "⚠️ Ingen lenke tilgjengelig for full artikkel."
-            else:
-                full = fetch_full_article(link)
-
-            entries.append({
-                "title": title,
-                "full": full
-            })
-
-    all_articles.append({
-        "name": category,
-        "entries": entries
-    })
-
-# Midlertidig utskrift for kontroll
-if __name__ == "__main__":
-    for section in all_articles:
-        print(f"\n=== {section['name']} ===")
-        for article in section["entries"]:
-            print(f" - {article['title']}\n   {article['full'][:150]}...\n")
+    {% for category in articles %}
+        {% for entry in category.entries %}
+            <div class="article">
+                <h2 id="{{ entry.title | replace(' ', '_') }}">{{ entry.title }}</h2>
+                {% for paragraph in entry.full.split('\n\n') %}
+                    <p>{{ paragraph.strip() }}</p>
+                {% endfor %}
+                <p class="back"><a href="#forside">⬅ Tilbake til forsiden</a></p>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>
