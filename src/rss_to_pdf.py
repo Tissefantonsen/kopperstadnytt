@@ -33,19 +33,20 @@ for kategori in config["Kategorier"]:
     entries = []
     for feed_url in kategori["kilder"]:
         d = feedparser.parse(feed_url)
-        for entry in d.entries[:10]:
-            link = getattr(entry, 'link', None)
-if link:
-    full = fetch_full_article(link)
-else:
-    print(f"Advarsel: RSS-artikkel mangler link: {entry.title}")
-    full = entry.get("summary", "Ingen artikkeltekst tilgjengelig.")
+entries = []
+for entry in feed.entries:
+    link = getattr(entry, 'link', None)
+    if link:
+        full = fetch_full_article(link)
+    else:
+        print(f"Advarsel: RSS-artikkel mangler link: {entry.title}")
+        full = entry.get("summary", "Ingen artikkeltekst tilgjengelig.")
 
-            entries.append({
-                "title": entry.title,
-                "link": entry.link,
-                "full": full
-            })
+    entries.append({
+        "title": entry.title,
+        "full": full
+    })
+
     all_articles.append({
         "name": kategori["navn"],
         "entries": entries[:10]
