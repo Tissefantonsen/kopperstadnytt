@@ -1,0 +1,23 @@
+{
+  "Kategorier": [
+    {
+      "navn": "Norske Nyheter",
+      "kilder": [
+        "https://www.nrk.no/toppsaker.rss",
+        "https://www.tv2.no/rss/nyheter"
+      ]
+    },
+    {
+      "navn": "Teknologi",
+      "kilder": [
+        "https://www.tu.no/rss"
+      ]
+    },
+    {
+      "navn": "Rock",
+      "kilder": [
+        "https://www.blabbermouth.net/feed/"
+      ]
+    }
+  ]
+}

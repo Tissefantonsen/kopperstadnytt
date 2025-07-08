@@ -1,0 +1,7 @@
+feedparser
+weasyprint
+jinja2
+requests
+beautifulsoup4
+dropbox
+html5lib

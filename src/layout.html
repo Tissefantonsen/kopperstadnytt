@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; margin: 1cm; }
+    h1.title { text-align: center; font-size: 24pt; margin-bottom: 0.5cm; }
+    .category { margin-top: 1cm; }
+    .article { margin-bottom: 1cm; }
+    .backlink { font-size: 10pt; text-align: right; }
+  </style>
+</head>
+<body>
+  <h1 class="title">KopperstadNytt</h1>
+  <h2>Innhold</h2>
+  <ul>
+    {% for category in articles %}
+      <li><a href="#{{ category.name | replace(' ', '') }}">{{ category.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% for category in articles %}
+    <div class="category">
+      <h2 id="{{ category.name | replace(' ', '') }}">{{ category.name }}</h2>
+      {% for article in category.entries %}
+        <div class="article">
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.full }}</p>
+          <div class="backlink"><a href="#top">Tilbake til forsiden</a></div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</body>
+</html>
